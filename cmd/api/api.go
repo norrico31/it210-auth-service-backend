@@ -27,7 +27,7 @@ func (s *APIServer) Run() error {
 
 	userStore := user.NewStore(s.db)
 	userHandler := user.NewHandler(userStore)
-	userHandler.RegisterRoutes(subrouterv1)
+	user.RegisterRoutes(subrouterv1, userHandler)
 
 	log.Println("Goroutines Ready to Run! and Listening on", s.addr)
 	return http.ListenAndServe(s.addr, router)

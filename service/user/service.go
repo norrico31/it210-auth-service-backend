@@ -21,11 +21,6 @@ func NewHandler(store entities.UserStore) *Handler {
 	return &Handler{store: store}
 }
 
-func (h *Handler) RegisterRoutes(router *mux.Router) {
-	router.HandleFunc("/register", h.handleRegister).Methods("POST")
-	router.HandleFunc("/login", h.handleLogin).Methods("POST")
-}
-
 func (h *Handler) handleRegister(w http.ResponseWriter, r *http.Request) {
 	var payload entities.UserRegisterPayload
 
@@ -87,7 +82,7 @@ func (h *Handler) handleLogin(w http.ResponseWriter, r *http.Request) {
 		utils.WriteError(w, http.StatusBadRequest, fmt.Errorf("invalid credentials"))
 		return
 	}
-	// Set LastActiveAt to nil
+
 	err = h.store.SetUserActive(u.ID)
 	if err != nil {
 		utils.WriteError(w, http.StatusInternalServerError, err)
