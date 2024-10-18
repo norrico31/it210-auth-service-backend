@@ -19,12 +19,15 @@ type UserStore interface {
 type User struct {
 	ID           int        `json:"id"`
 	FirstName    string     `json:"firstName"`
+	Age          int        `json:"age"`
 	LastName     string     `json:"lastName"`
 	Email        string     `json:"email"`
 	Password     string     `json:"-"`
 	LastActiveAt *time.Time `json:"lastActiveAt"`
-	// IsActive     bool       `json:"isActive"`
+	// IsActive     bool       `json:"isActive"` // set this when email confirmation
 	CreatedAt time.Time `json:"createdAt"`
+	UpdatedAt time.Time `json:"updatedAt"`
+	DeletedAt time.Time `json:"deletedAt"`
 }
 
 type UserRegisterPayload struct {
