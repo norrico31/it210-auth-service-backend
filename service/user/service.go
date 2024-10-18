@@ -130,7 +130,7 @@ func (h *Handler) HandleUpdateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var payload entities.User
+	var payload entities.UserUpdatePayload
 
 	if err := utils.ParseJSON(r, &payload); err != nil {
 		utils.WriteError(w, http.StatusBadRequest, err)
@@ -144,11 +144,21 @@ func (h *Handler) HandleUpdateUser(w http.ResponseWriter, r *http.Request) {
 		Email:     payload.Email,
 	}
 
+	if payload.Password != "" {
+		hashedPassword, err := utils.HashPassword(payload.Password)
+		if err != nil {
+			utils.WriteError(w, http.StatusBadRequest, err)
+			return
+		}
+		user.Password = hashedPassword
+	}
+
 	err = h.store.UpdateUser(user)
 	if err != nil {
 		utils.WriteError(w, http.StatusInternalServerError, err)
 		return
 	}
+
 	utils.WriteJSON(w, http.StatusOK, nil)
 }
 
