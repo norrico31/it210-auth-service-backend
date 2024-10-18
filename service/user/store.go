@@ -3,6 +3,7 @@ package user
 import (
 	"database/sql"
 	"fmt"
+	"log"
 	"time"
 
 	"github.com/norrico31/it210-auth-service-backend/entities"
@@ -14,6 +15,37 @@ type Store struct {
 
 func NewStore(db *sql.DB) *Store {
 	return &Store{db: db}
+}
+
+func (s *Store) GetUsers() ([]*entities.User, error) {
+	rows, err := s.db.Query(`SELECT 
+		firstName,
+		lastName,
+		age,
+		email
+	FROM users`)
+	if err != nil {
+		return nil, fmt.Errorf("failed to query users: %v", err)
+	}
+	defer rows.Close()
+
+	var users []*entities.User
+
+	for rows.Next() {
+		var user entities.User
+
+		err := rows.Scan(&user.FirstName, &user.LastName, &user.Age, &user.Email)
+		if err != nil {
+			log.Printf("Failed to scan user: %v", err)
+			continue
+		}
+		users = append(users, &user)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("failed to iterate over user rows: %v", err)
+	}
+	return users, nil
 }
 
 func (s *Store) GetUserById(id int) (*entities.User, error) {

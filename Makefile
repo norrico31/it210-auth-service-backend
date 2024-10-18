@@ -26,4 +26,4 @@ seed-all: build-seeder
 	./bin/seeder
 
 clean:
-	rm -f bin/seeder
+	rm -rf bin

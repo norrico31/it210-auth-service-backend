@@ -21,11 +21,23 @@ func NewHandler(store entities.UserStore) *Handler {
 	return &Handler{store: store}
 }
 
+func (h *Handler) handleGetUsers(w http.ResponseWriter, r *http.Request) {
+	users, err := h.store.GetUsers()
+	if err != nil {
+		utils.WriteError(w, http.StatusBadRequest, err)
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+
+	utils.WriteJSON(w, http.StatusOK, map[string]interface{}{"data": users})
+}
+
 func (h *Handler) handleRegister(w http.ResponseWriter, r *http.Request) {
 	var payload entities.UserRegisterPayload
 
 	if err := utils.ParseJSON(r, &payload); err != nil {
 		utils.WriteError(w, http.StatusBadRequest, err)
+		return
 	}
 
 	if err := utils.Validate.Struct(payload); err != nil {
@@ -56,6 +68,7 @@ func (h *Handler) handleRegister(w http.ResponseWriter, r *http.Request) {
 		utils.WriteError(w, http.StatusInternalServerError, err)
 		return
 	}
+
 	utils.WriteJSON(w, http.StatusCreated, nil)
 }
 
