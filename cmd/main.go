@@ -5,18 +5,11 @@ import (
 	"log"
 
 	"github.com/norrico31/it210-auth-service-backend/cmd/api"
-	"github.com/norrico31/it210-auth-service-backend/config"
 	"github.com/norrico31/it210-auth-service-backend/db"
 )
 
 func main() {
-	db, err := db.NewPostgresStorage(
-		config.Envs.DBUser,
-		config.Envs.DBPassword,
-		config.Envs.DBAddress,
-		config.Envs.DBName,
-		5432,
-	)
+	db, err := db.NewPostgresStorage()
 	if err != nil {
 		log.Fatal(err)
 	}

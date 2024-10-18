@@ -8,8 +8,6 @@ import (
 	"github.com/norrico31/it210-auth-service-backend/entities"
 )
 
-// TODO: add delete and update user
-
 type Store struct {
 	db *sql.DB
 }

@@ -6,11 +6,12 @@ import (
 	"log"
 
 	_ "github.com/lib/pq"
+	"github.com/norrico31/it210-auth-service-backend/config"
 )
 
-func NewPostgresStorage(user, password, host, dbname string, port int) (*sql.DB, error) {
+func NewPostgresStorage() (*sql.DB, error) {
 	connStr := fmt.Sprintf("user=%s password=%s host=%s dbname=%s port=%d sslmode=disable",
-		user, password, host, dbname, port)
+		config.Envs.DBUser, config.Envs.DBPassword, config.Envs.DBAddress, config.Envs.DBName, 5432)
 	db, err := sql.Open("postgres", connStr)
 	if err != nil {
 		log.Fatal(err)
