@@ -15,3 +15,15 @@ migrate-up:
 
 migrate-down:
 	@go run cmd/migrate/main.go down
+
+GO_CMD=go
+SEED_CMD=cmd/seed
+
+build-seeder:
+	$(GO_CMD) build -o bin/seeder $(SEED_CMD)/main.go
+
+seed-all: build-seeder
+	./bin/seeder
+
+clean:
+	rm -f bin/seeder

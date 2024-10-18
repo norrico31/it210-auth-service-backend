@@ -1,5 +1,6 @@
 package main
 
+// TODO: REMOVE ALL MIGRATIONS INTO CORE REPOSITORY
 import (
 	"log"
 	"os"
