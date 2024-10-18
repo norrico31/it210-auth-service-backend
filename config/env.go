@@ -25,12 +25,12 @@ func initConfig() Config {
 	return Config{
 		PublicHost:             getEnv("PUBLIC_HOST", "http://localhost"),
 		Port:                   getEnv("PORT", "8080"),
-		DBUser:                 getEnv("DB_USER", "postgres"),  // Changed from "root" to "postgres"
-		DBPassword:             getEnv("DB_PASSWORD", "root"),  // Default password, change as needed
-		DBAddress:              getEnv("DB_HOST", "127.0.0.1"), // Changed port to 5432
+		DBUser:                 getEnv("DB_USER", "postgres"),
+		DBPassword:             getEnv("DB_PASSWORD", "root"),
+		DBAddress:              getEnv("DB_HOST", "127.0.0.1"),
 		DBName:                 getEnv("DB_NAME", "it210"),
 		JWTSecret:              getEnv("JWT_SECRET", "IS-IT_REALL-A_SECRET-?~JWT-NOT_SO-SURE"),
-		JWTExpirationInSeconds: getEnvAsInt("JWT_EXP", 3600*24*7), // 7 days
+		JWTExpirationInSeconds: getEnvAsInt("JWT_EXP", 3600*24*7),
 	}
 }
 

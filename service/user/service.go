@@ -8,25 +8,25 @@ import (
 	"github.com/go-playground/validator"
 	_ "github.com/go-playground/validator/v10"
 	"github.com/gorilla/mux"
-	"github.com/norrico31/it210-auth-service-backend/entities/userentities"
+	"github.com/norrico31/it210-auth-service-backend/entities"
 	"github.com/norrico31/it210-auth-service-backend/utils"
 )
 
 type Handler struct {
-	store userentities.UserStore
+	store entities.UserStore
 }
 
-func NewHandler(store userentities.UserStore) *Handler {
+func NewHandler(store entities.UserStore) *Handler {
 	return &Handler{store: store}
 }
 
-func (h *Handler) UserRoutes(router *mux.Router) {
+func (h *Handler) RegisterRoutes(router *mux.Router) {
 	router.HandleFunc("/login", h.handleLogin).Methods("POST")
 	router.HandleFunc("/register", h.handleRegister).Methods("POST")
 }
 
 func (h *Handler) handleLogin(w http.ResponseWriter, r *http.Request) {
-	var payload userentities.UserLoginPayload
+	var payload entities.UserLoginPayload
 
 	if err := utils.ParseJSON(r, &payload); err != nil {
 		utils.WriteError(w, http.StatusBadRequest, err)
@@ -44,12 +44,12 @@ func (h *Handler) handleLogin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !auth.ComparePasswords(u.Password, []byte(payload.Password)) {
+	if !utils.ComparePasswords(u.Password, []byte(payload.Password)) {
 		utils.WriteError(w, http.StatusBadRequest, fmt.Errorf("invalid credentials"))
 		return
 	}
 
-	token, err := auth.GenerateToken(u.ID)
+	token, err := utils.GenerateToken(u.ID)
 	if err != nil {
 		utils.WriteError(w, http.StatusBadRequest, err)
 		return
@@ -59,7 +59,7 @@ func (h *Handler) handleLogin(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handler) handleRegister(w http.ResponseWriter, r *http.Request) {
-	var payload userentities.UserRegisterPayload
+	var payload entities.UserRegisterPayload
 
 	if err := utils.ParseJSON(r, &payload); err != nil {
 		utils.WriteError(w, http.StatusBadRequest, err)
@@ -77,13 +77,13 @@ func (h *Handler) handleRegister(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	hashedPassword, err := auth.HashPassword(payload.Password)
+	hashedPassword, err := utils.HashPassword(payload.Password)
 	if err != nil {
 		utils.WriteError(w, http.StatusInternalServerError, err)
 		return
 	}
 
-	err = h.store.CreateUser(userentities.User{
+	err = h.store.CreateUser(entities.User{
 		FirstName: payload.FirstName,
 		LastName:  payload.LastName,
 		Email:     payload.Email,

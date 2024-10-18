@@ -1,11 +1,18 @@
 package entities
 
-import "time"
+import (
+	"time"
+
+	_ "github.com/google/uuid"
+)
 
 type UserStore interface {
 	GetUserByEmail(email string) (*User, error)
 	GetUserById(id int) (*User, error)
+	// GetUser(val string) (*User, error)
 	CreateUser(User) error
+	UpdateUser(User) error
+	DeleteUser(int) error
 }
 
 type User struct {
