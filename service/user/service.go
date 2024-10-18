@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/go-playground/validator"
 	_ "github.com/go-playground/validator/v10"
@@ -86,6 +87,12 @@ func (h *Handler) handleLogin(w http.ResponseWriter, r *http.Request) {
 		utils.WriteError(w, http.StatusBadRequest, fmt.Errorf("invalid credentials"))
 		return
 	}
+	// Set LastActiveAt to nil
+	err = h.store.SetUserActive(u.ID)
+	if err != nil {
+		utils.WriteError(w, http.StatusInternalServerError, err)
+		return
+	}
 
 	token, err := utils.GenerateToken(u.ID)
 	if err != nil {
@@ -94,6 +101,22 @@ func (h *Handler) handleLogin(w http.ResponseWriter, r *http.Request) {
 	}
 
 	utils.WriteJSON(w, http.StatusOK, map[string]string{"token": token})
+}
+
+func (h *Handler) handleLogout(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	str, ok := vars["userId"]
+	if !ok {
+		utils.WriteError(w, http.StatusBadRequest, fmt.Errorf("missing user Id"))
+		return
+	}
+	userId, err := strconv.Atoi(str)
+	if err != nil {
+		utils.WriteError(w, http.StatusBadRequest, fmt.Errorf("invalid user Id"))
+		return
+	}
+	now := time.Now()
+	err = h.store.UpdateLastActiveTime(userId, now)
 }
 
 func (h *Handler) handleGetUser(w http.ResponseWriter, r *http.Request) {

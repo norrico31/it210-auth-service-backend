@@ -3,6 +3,7 @@ package user
 import (
 	"database/sql"
 	"fmt"
+	"time"
 
 	"github.com/norrico31/it210-auth-service-backend/entities"
 )
@@ -61,28 +62,28 @@ func (s *Store) GetUserByEmail(email string) (*entities.User, error) {
 }
 
 func (s *Store) CreateUser(user entities.User) error {
-	_, err := s.db.Exec("INSERT INTO users (firstName, lastName, email, password) VALUES (?, ?, ?, ?)", user.FirstName, user.LastName, user.Email, user.Password)
-	if err != nil {
-		return err
-	}
-
-	return nil
+	_, err := s.db.Exec("INSERT INTO users (firstName, lastName, email, password, lastActiveAt) VALUES (?, ?, ?, ?, ?)", user.FirstName, user.LastName, user.Email, user.Password, nil)
+	return err
 }
 
 func (s *Store) UpdateUser(user entities.User) error {
 	_, err := s.db.Exec("UPDATE users SET firstName = ?, lastName = ?, email = ?, password = ? WHERE id = ?", user.FirstName, user.LastName, user.Email, user.Password, user.ID)
-	if err != nil {
-		return nil
-	}
-	return nil
+	return err
 }
 
 func (s *Store) DeleteUser(id int) error {
 	_, err := s.db.Exec("DELETE FROM users WHERE id = ?", id)
-	if err != nil {
-		return err
-	}
-	return nil
+	return err
+}
+
+func (s *Store) SetUserActive(userId int) error {
+	_, err := s.db.Exec("UPDATE users SET lastActiveAt = NULL WHERE id = ?", userId)
+	return err
+}
+
+func (s *Store) UpdateLastActiveTime(userId int, time time.Time) error {
+	_, err := s.db.Exec("UPDATE users SET lastActiveAt = ? WHERE id = ?", time, userId)
+	return err
 }
 
 func scanRowIntoUser(rows *sql.Rows, user *entities.User) error {
