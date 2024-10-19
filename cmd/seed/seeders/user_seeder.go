@@ -28,7 +28,7 @@ func SeedUsers(db *sql.DB) {
 		}
 		return string(hashedPassword)
 	}
-	// Seed users
+
 	users := []entities.User{
 		{
 			FirstName: "Mary Grace",

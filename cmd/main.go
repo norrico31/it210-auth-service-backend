@@ -16,7 +16,7 @@ func main() {
 	defer db.Close()
 
 	fmt.Println("PostgreSQL connection established!")
-	server := api.NewApiServer(":8080", db)
+	server := api.NewApiServer(":8081", db)
 	if err := server.Run(); err != nil {
 		log.Fatal(err)
 	}

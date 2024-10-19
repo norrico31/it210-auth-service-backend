@@ -22,8 +22,6 @@ services:
       - ./cmd:/app/cmd
       - ./entrypoint.sh:/app/entrypoint.sh
       - ./cmd/migrate/migrations:/app/cmd/migrate/migrations
-    networks:
-      - it210-network  # Add this line to use the shared network
 
   postgres:
     image: postgres:latest
@@ -40,13 +38,7 @@ services:
       interval: 5s
       timeout: 2s
       retries: 5
-    networks:
-      - it210-network  # Add this line to use the shared network
 
 volumes:
   postgres_data:
     driver: local
-
-networks:
-  it210-network:  # Define the shared network
-    external: true

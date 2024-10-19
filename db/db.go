@@ -9,6 +9,8 @@ import (
 	"github.com/norrico31/it210-auth-service-backend/config"
 )
 
+const addr = "127.0.0.1"
+
 func NewPostgresStorage() (*sql.DB, error) {
 	connStr := fmt.Sprintf("user=%s password=%s host=%s dbname=%s port=%d sslmode=disable",
 		config.Envs.DBUser, config.Envs.DBPassword, config.Envs.DBAddress, config.Envs.DBName, 5432)

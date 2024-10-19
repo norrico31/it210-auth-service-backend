@@ -21,6 +21,11 @@ func NewHandler(store entities.UserStore) *Handler {
 	return &Handler{store: store}
 }
 
+func (h *Handler) handleHelloWorld(w http.ResponseWriter, r *http.Request) {
+	str := fmt.Sprintf("Auth Service: Hello World ")
+	utils.WriteJSON(w, http.StatusOK, str)
+}
+
 func (h *Handler) handleGetUsers(w http.ResponseWriter, r *http.Request) {
 	users, err := h.store.GetUsers()
 	if err != nil {
