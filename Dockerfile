@@ -41,6 +41,6 @@ COPY --from=builder /app/cmd/migrate/migrations /app/auth-service/cmd/migrate/mi
 
 RUN chmod +x /app/auth-service/migrate /app/auth-service/seed /app/auth-service/auth-service
 
-EXPOSE 8081
+EXPOSE 81 8081
 
 ENTRYPOINT ["/app/auth-service/entrypoint.sh"]

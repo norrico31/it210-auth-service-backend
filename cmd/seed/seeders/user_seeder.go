@@ -17,7 +17,7 @@ func SeedUsers(db *sql.DB) {
 		log.Fatalf("Failed to check user table: %v", err)
 	}
 
-	if count > 0 {
+	if count >= 0 {
 		// log.Println("User table already has data. Skipping seeing.")
 		return
 	}
@@ -28,7 +28,7 @@ func SeedUsers(db *sql.DB) {
 		}
 		return string(hashedPassword)
 	}
-
+	now := time.Now()
 	users := []entities.User{
 		{
 			FirstName: "Mary Grace",
@@ -36,8 +36,8 @@ func SeedUsers(db *sql.DB) {
 			Age:       20,
 			Email:     "mvbitmal@up.edu.ph",
 			Password:  hashPassword("secret.123"),
-			CreatedAt: time.Now(),
-			UpdatedAt: time.Now(),
+			CreatedAt: now,
+			UpdatedAt: now,
 		},
 		{
 			FirstName: "Chester",
@@ -45,8 +45,8 @@ func SeedUsers(db *sql.DB) {
 			Age:       19,
 			Email:     "cgfrancisco@up.edu.ph",
 			Password:  hashPassword("secret.123"),
-			CreatedAt: time.Now(),
-			UpdatedAt: time.Now(),
+			CreatedAt: now,
+			UpdatedAt: now,
 		},
 		{
 			FirstName: "Norrico Gerald",
@@ -54,8 +54,8 @@ func SeedUsers(db *sql.DB) {
 			Age:       18,
 			Email:     "nmbiason@up.edu.ph",
 			Password:  hashPassword("secret.123"),
-			CreatedAt: time.Now(),
-			UpdatedAt: time.Now(),
+			CreatedAt: now,
+			UpdatedAt: now,
 		},
 	}
 

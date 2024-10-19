@@ -17,7 +17,6 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer db.Close()
 
 	fmt.Println("PostgreSQL connection established!")
 	server := api.NewApiServer(":"+PORT, db)
