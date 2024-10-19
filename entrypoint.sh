@@ -20,21 +20,21 @@ done
 echo "PostgreSQL is up!"
 
 # Run migrations
-if [ -x /app/migrate ]; then
+if [ -x /app/auth-service/migrate ]; then
   echo "ENTRYPOINT: Running migrations..."
-  /app/migrate -path=/app/cmd/migrate/migrations -database "postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}?sslmode=disable" up || { echo "Migration failed"; exit 1; }
+  /app/auth-service/migrate -path=/app/auth-service/cmd/migrate/migrations -database "postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}?sslmode=disable" up || { echo "Migration failed"; exit 1; }
 else
   echo "Migration binary not found."
 fi
 
 # Run seeding
-if [ -x /app/seed ]; then
+if [ -x /app/auth-service/seed ]; then
   echo "ENTRYPOINT: Running seeding..."
-  /app/seed || { echo "Seeding failed"; }
+  /app/auth-service/seed || { echo "Seeding failed"; }
 else
   echo "Seeder binary not found."
 fi
 
 # Start the auth service
 echo "ENTRYPOINT: Starting auth service..."
-exec /app/auth-service || { echo "Auth service failed to start"; }
+exec /app/auth-service/auth-service || { echo "Auth service failed to start"; }
