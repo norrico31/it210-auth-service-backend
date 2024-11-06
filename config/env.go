@@ -12,6 +12,7 @@ type Config struct {
 	DBPassword             string
 	DBAddress              string
 	DBName                 string
+	DBPort                 string
 	GatewayPort            string
 	JWTExpirationInSeconds int64
 	JWTSecret              string
@@ -27,6 +28,7 @@ func initConfig() Config {
 		DBUser:                 getEnv("DB_USER", "postgres"),
 		DBPassword:             getEnv("DB_PASSWORD", "root"),
 		DBAddress:              getEnv("DB_ADDRESS", "postgres"),
+		DBPort:                 getEnv("DB_PORT", "5432"),
 		GatewayPort:            getEnv("GATEWAY_SERVICE_PORT", "8080"),
 		DBName:                 getEnv("DB_NAME", "it210"),
 		JWTSecret:              getEnv("JWT_SECRET", "IS-IT_REALL-A_SECRET-?~JWT-NOT_SO-SURE"),

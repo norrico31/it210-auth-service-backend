@@ -8,11 +8,13 @@ services:
     environment:
       - JWT_SECRET=${JWT_SECRET}
       - DB_HOST=${DB_HOST}
-      - DB_PORT=5432
+      - PORT=${PORT}
+      - DB_PORT=${DB_PORT}
       - DB_USER=${DB_USER}
       - DB_PASSWORD=${DB_PASSWORD}
       - DB_NAME=${DB_NAME}
       - DB_ADDRESS=${DB_ADDRESS}
+      - GATEWAY_SERVICE_PORT=${GATEWAY_SERVICE_PORT}
     ports:
       - "8081:8081"  
     depends_on:

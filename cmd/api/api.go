@@ -26,40 +26,38 @@ func NewApiServer(addr string, db *sql.DB, cfg config.Config) *APIServer {
 	}
 }
 
+// TODO: STILL NOT WORKING IN DOCKER
 func (s *APIServer) enforceGatewayOrigin(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// Construct allowed host based on the config
 		allowedHost := fmt.Sprintf("%s:%s", s.config.PublicHost, s.config.GatewayPort)
-		fmt.Print(allowedHost)
-		// Check if the request is coming from the specified gateway origin
-		if r.Host != allowedHost && !strings.HasPrefix(r.Referer(), fmt.Sprintf("http://%s", allowedHost)) {
-			fmt.Println("IT'S NOT ACCESSING HERE ")
+		fmt.Printf("rHost: %s", r.Host)
+		fmt.Printf("gatewayPort: %s", s.config.GatewayPort)
+		if r.Host == allowedHost {
+			// Allow requests that come from the gateway (127.0.0.1:8080)
+			next.ServeHTTP(w, r)
+			return
+		}
+
+		// If the request is directly to the auth service (127.0.0.1:8081), return NOT FOUND
+		if r.Host == fmt.Sprintf("127.0.0.1:%s", s.config.GatewayPort) {
 			http.Error(w, "NOT FOUND", http.StatusNotFound)
 			return
 		}
 
-		// Allow request to proceed if origin is correct
+		// Optional: Check the referer header as additional verification
+		if !strings.HasPrefix(r.Referer(), fmt.Sprintf("http://%s", allowedHost)) {
+			http.Error(w, "NOT FOUND", http.StatusNotFound)
+			return
+		}
+
+		// Allow request to proceed if it's from the correct gateway
 		next.ServeHTTP(w, r)
 	})
 }
 
 func (s *APIServer) Run() error {
 	router := mux.NewRouter()
-	// addr := fmt.Sprintf("%s:%s", config.Envs.PublicHost, config.Envs.Port)
-	// router.Use(func(next http.Handler) http.Handler {
-	// 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-	// 		// TODO: ADJUST CONDITION BASE ON PROD/DEV URL OR PATH
-	// 		fmt.Println("HSOT:: ", r.Host)
-	// 		fmt.Println("PORT FROM ENV:: ", addr)
-	// 		fmt.Println("s.Address:: ", s.addr)
-	// 		if addr == r.Host {
-	// 			http.Error(w, "Forbidden", http.StatusForbidden)
-	// 			return
-	// 		}
-
-	// 		next.ServeHTTP(w, r)
-	// 	})
-	// })
 	router.Use(s.enforceGatewayOrigin)
 
 	subrouterv1 := router.PathPrefix("/api/v1").Subrouter()
