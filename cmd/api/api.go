@@ -2,23 +2,45 @@ package api
 
 import (
 	"database/sql"
+	"fmt"
 	"log"
 	"net/http"
+	"strings"
 
 	"github.com/gorilla/mux"
+	"github.com/norrico31/it210-auth-service-backend/config"
 	"github.com/norrico31/it210-auth-service-backend/service/user"
 )
 
 type APIServer struct {
-	addr string
-	db   *sql.DB
+	addr   string
+	db     *sql.DB
+	config config.Config
 }
 
-func NewApiServer(addr string, db *sql.DB) *APIServer {
+func NewApiServer(addr string, db *sql.DB, cfg config.Config) *APIServer {
 	return &APIServer{
-		addr: addr,
-		db:   db,
+		addr:   addr,
+		db:     db,
+		config: cfg,
 	}
+}
+
+func (s *APIServer) enforceGatewayOrigin(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// Construct allowed host based on the config
+		allowedHost := fmt.Sprintf("%s:%s", s.config.PublicHost, s.config.GatewayPort)
+		fmt.Print(allowedHost)
+		// Check if the request is coming from the specified gateway origin
+		if r.Host != allowedHost && !strings.HasPrefix(r.Referer(), fmt.Sprintf("http://%s", allowedHost)) {
+			fmt.Println("IT'S NOT ACCESSING HERE ")
+			http.Error(w, "NOT FOUND", http.StatusNotFound)
+			return
+		}
+
+		// Allow request to proceed if origin is correct
+		next.ServeHTTP(w, r)
+	})
 }
 
 func (s *APIServer) Run() error {
@@ -38,6 +60,7 @@ func (s *APIServer) Run() error {
 	// 		next.ServeHTTP(w, r)
 	// 	})
 	// })
+	router.Use(s.enforceGatewayOrigin)
 
 	subrouterv1 := router.PathPrefix("/api/v1").Subrouter()
 

@@ -11,9 +11,10 @@ run: build
 	@./bin/it210
 
 run-dev:
-	@echo "Running in development mode with live reload"
+	@go run ./cmd
+	# @echo "Running in development mode with live reload"
 	# Assuming air or a similar live reload tool is installed (you can modify this as needed)
-	@air
+	# @air
 
 migration:
 	@migrate create -ext sql -dir cmd/migrate/migrations $(filter-out $@,$(MAKECMDGOALS))

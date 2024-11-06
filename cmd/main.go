@@ -19,7 +19,7 @@ func main() {
 	}
 
 	fmt.Println("PostgreSQL connection established!")
-	server := api.NewApiServer(":"+PORT, db)
+	server := api.NewApiServer(":"+PORT, db, config.Envs)
 	if err := server.Run(); err != nil {
 		log.Fatal(err)
 	}
