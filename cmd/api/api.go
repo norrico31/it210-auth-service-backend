@@ -26,13 +26,11 @@ func NewApiServer(addr string, db *sql.DB, cfg config.Config) *APIServer {
 	}
 }
 
-// TODO: STILL NOT WORKING IN DOCKER
+// TODO: STILL NOT WORKING IN CONTAINER (PORT VARIES EVERYTIME)
 func (s *APIServer) enforceGatewayOrigin(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// Construct allowed host based on the config
 		allowedHost := fmt.Sprintf("%s:%s", s.config.PublicHost, s.config.GatewayPort)
-		fmt.Printf("rHost: %s", r.Host)
-		fmt.Printf("gatewayPort: %s", s.config.GatewayPort)
 		if r.Host == allowedHost {
 			// Allow requests that come from the gateway (127.0.0.1:8080)
 			next.ServeHTTP(w, r)

@@ -24,8 +24,8 @@ services:
       - ./cmd:/app/cmd
       - ./entrypoint.sh:/app/auth-service/entrypoint.sh  # Adjusted path
       - ./cmd/migrate/migrations:/app/auth-service/cmd/migrate/migrations  # Adjusted path
-    networks:
-      - it210-network  # Add this line to use the shared network
+    # networks:
+    #   - it210-network  # Add this line to use the shared network
 
   postgres:
     image: postgres:latest
@@ -42,13 +42,13 @@ services:
       interval: 5s
       timeout: 2s
       retries: 5
-    networks:
-      - it210-network  # Add this line to use the shared network
+    # networks:
+    #   - it210-network  # Add this line to use the shared network
 
 volumes:
   postgres_data:
     driver: local
 
-networks:
-  it210-network:  # Define the shared network
-    external: true
+# networks:
+#   it210-network:  # Define the shared network
+#     external: true
