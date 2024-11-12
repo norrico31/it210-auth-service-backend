@@ -58,7 +58,7 @@ func (s *APIServer) Run() error {
 	router := mux.NewRouter()
 	router.Use(s.enforceGatewayOrigin)
 
-	subrouterv1 := router.PathPrefix("/api/v1").Subrouter()
+	subrouterv1 := router.PathPrefix("/api/v1/users").Subrouter()
 
 	userStore := user.NewStore(s.db)
 	userHandler := user.NewHandler(userStore)
