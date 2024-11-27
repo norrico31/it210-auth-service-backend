@@ -7,14 +7,16 @@ services:
       dockerfile: Dockerfile
     environment:
       - JWT_SECRET=${JWT_SECRET}
-      - DB_HOST=${DB_HOST}
+      - PGHOST=${PGHOST}  
       - PORT=${PORT}
-      - DB_PORT=${DB_PORT}
-      - DB_USER=${DB_USER}
-      - DB_PASSWORD=${DB_PASSWORD}
-      - DB_NAME=${DB_NAME}
+      - PGPORT=${PGPORT}
+      - PGUSER=${PGUSER}  
+      - PGPASSWORD=${PGPASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}  
       - DB_ADDRESS=${DB_ADDRESS}
       - GATEWAY_SERVICE_PORT=${GATEWAY_SERVICE_PORT}
+      - DATABASE_URL=${DATABASE_URL}  
+      - DATABASE_PUBLIC_URL=${DATABASE_PUBLIC_URL} 
     ports:
       - "8081:8081"  
     depends_on:
@@ -22,17 +24,13 @@ services:
         condition: service_healthy  
     volumes:
       - ./cmd:/app/cmd
-      - ./entrypoint.sh:/app/auth-service/entrypoint.sh  # Adjusted path
-      - ./cmd/migrate/migrations:/app/auth-service/cmd/migrate/migrations  # Adjusted path
-    # networks:
-    #   - it210-network  # Add this line to use the shared network
 
   postgres:
     image: postgres:latest
     environment:
-      POSTGRES_DB: ${DB_NAME}
-      POSTGRES_USER: ${DB_USER}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${PGUSER}
+      POSTGRES_PASSWORD: ${PGPASSWORD}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
@@ -42,13 +40,7 @@ services:
       interval: 5s
       timeout: 2s
       retries: 5
-    # networks:
-    #   - it210-network  # Add this line to use the shared network
 
 volumes:
   postgres_data:
     driver: local
-
-# networks:
-#   it210-network:  # Define the shared network
-#     external: true

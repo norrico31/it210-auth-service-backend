@@ -3,6 +3,8 @@ package config
 import (
 	"os"
 	"strconv"
+
+	"github.com/joho/godotenv"
 )
 
 type Config struct {
@@ -12,27 +14,27 @@ type Config struct {
 	DBPassword             string
 	DBAddress              string
 	DBName                 string
-	DBPort                 string
-	GatewayPort            string
 	JWTExpirationInSeconds int64
 	JWTSecret              string
+	GatewayPort            string
+	DATABASE_URL           string
 }
 
 var Envs = initConfig()
 
 func initConfig() Config {
-
+	godotenv.Load()
 	return Config{
-		PublicHost:             getEnv("PUBLIC_HOST", "127.0.0.1"),
+		PublicHost:             getEnv("DATABASE_URL", "http://localhost"),
 		Port:                   getEnv("PORT", "8081"),
-		DBUser:                 getEnv("DB_USER", "postgres"),
-		DBPassword:             getEnv("DB_PASSWORD", "root"),
+		DBUser:                 getEnv("POSTGRES_USER", "postgres"),
+		DBPassword:             getEnv("PGPASSWORD", "dauVXazugjuqcUMFCPFTIQxUSHVOjIrW"),
 		DBAddress:              getEnv("DB_ADDRESS", "postgres"),
-		DBPort:                 getEnv("DB_PORT", "5432"),
 		GatewayPort:            getEnv("GATEWAY_SERVICE_PORT", "8080"),
-		DBName:                 getEnv("DB_NAME", "it210"),
+		DBName:                 getEnv("POSTGRES_DB", "railway"),
 		JWTSecret:              getEnv("JWT_SECRET", "IS-IT_REALL-A_SECRET-?~JWT-NOT_SO-SURE"),
 		JWTExpirationInSeconds: getEnvAsInt("JWT_EXP", 3600*24*7),
+		DATABASE_URL:           getEnv("DATABASE_PUBLIC_URL", "postgresql://postgres:dauVXazugjuqcUMFCPFTIQxUSHVOjIrW@junction.proxy.rlwy.net:58308/railway"),
 	}
 }
 
