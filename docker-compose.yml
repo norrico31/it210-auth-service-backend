@@ -6,37 +6,36 @@ services:
       context: .
       dockerfile: Dockerfile
     environment:
-      - JWT_SECRET=${JWT_SECRET}
-      - PGHOST=${PGHOST}  
-      - PORT=${PORT}
-      - PGPORT=${PGPORT}
-      - PGUSER=${PGUSER}  
-      - PGPASSWORD=${PGPASSWORD}
-      - POSTGRES_DB=${POSTGRES_DB}  
-      - DB_ADDRESS=${DB_ADDRESS}
-      - GATEWAY_SERVICE_PORT=${GATEWAY_SERVICE_PORT}
-      - DATABASE_URL=${DATABASE_URL}  
-      - DATABASE_PUBLIC_URL=${DATABASE_PUBLIC_URL} 
+      JWT_SECRET: "${JWT_SECRET}"
+      PGHOST: "${PGHOST}"
+      PORT: "${PORT}"
+      PGPORT: "${PGPORT}"
+      PGUSER: "${PGUSER}"
+      PGPASSWORD: "${PGPASSWORD}"
+      POSTGRES_DB: "${POSTGRES_DB}"
+      DB_ADDRESS: "${DB_ADDRESS}"
+      GATEWAY_SERVICE_PORT: "${GATEWAY_SERVICE_PORT}"
+      DATABASE_URL: "${DATABASE_URL}"
+      DATABASE_PUBLIC_URL: "${DATABASE_PUBLIC_URL}"
     ports:
-      - "8081:8081"  
+      - "8081:8081"
     depends_on:
-      postgres:
-        condition: service_healthy  
+      - postgres
     volumes:
       - ./cmd:/app/cmd
 
   postgres:
     image: postgres:latest
     environment:
-      POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_USER: ${PGUSER}
-      POSTGRES_PASSWORD: ${PGPASSWORD}
+      POSTGRES_DB: "${POSTGRES_DB}"
+      POSTGRES_USER: "${PGUSER}"
+      POSTGRES_PASSWORD: "${PGPASSWORD}"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
-      - "5432:5432" 
+      - "5432:5432"
     healthcheck:
-      test: ["CMD", "pg_isready", "-U", "${DB_USER}"]
+      test: ["CMD", "pg_isready", "-U", "${PGUSER}"]
       interval: 5s
       timeout: 2s
       retries: 5
